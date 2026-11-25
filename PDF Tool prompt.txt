@@ -1,0 +1,87 @@
+Need a desktop application which can perform following tasks
+a)	Merge the pdf: When user upload multiple pdf it merges them into single pdf
+b)	Split the pdf: When user upload the pdf it shall first ask about pages to be split. For example, if the uploaded pdf has 10 pages and user enters 1, 3-5 and 8-10 then the tool should create 3 pdf first one with page 1 only, second one with page 3-5 and third one with page 8-10
+c)	Extract pages: When user upload pdf, code will ask user the pages to be extracted. It should create single pdf with extracted pages. Example User upload 10 page pdf and user enters 1,3-5 and 8-10 then there should be single pdf with page 1,3,4,5,8,9,10
+Technical requirements
+●	Use Python with a simple window interface
+●	The name of my application should be “PDF Studio Pro”
+●	Make it work without needing complex software installations
+●	It should use pyqt for the interface. The app should look professional, and the interface design should be vibrant and colorful.
+●	Give me the list of all libraries that would be used and pip list to install them. The pip list should be in horizontal one cmd line which can be run directly in cmd in one go.
+●	Code should be safe, simple and ready to run in IDLE
+feature to sort/rearrange the pages and splitting based on page breaks marked
+
+
+=====
+Here's PDF Studio Pro, a single Python file with a colourful PyQt interface. It has a gradient sidebar with three tools: Merge, Split and Extract. I tested the page-range parsing and PDF handling, and checked that the window builds.
+
+Install command (run once in Command Prompt):
+
+pip install PyQt5 pypdf cryptography
+
+Libraries used
+
+PyQt5 builds the window, buttons, file dialogs and styling.
+pypdf reads, merges, splits and writes PDFs. It is pure Python, so nothing else needs to be installed.
+cryptography lets pypdf open PDFs that are locked against editing but have no open password. Bank statements and government forms are often like this.
+os, re, sys come built into Python, so you don't install them.
+
+To run it, open pdf_studio_pro.py in IDLE and press F5.
+
+How each tool works
+
+Merge: Add PDFs with the button or drag them in from Explorer. Each file shows its page count. Change the order by dragging items or using Move Up/Down, then save the merged file wherever you like.
+Split: Choose a PDF and type the ranges, for example 1, 3-5 and 8-10. Then pick an output folder. This example creates three files named like report_part1_page_1.pdf, report_part2_pages_3-5.pdf and so on.
+Extract: Same input as Split, but the result is one PDF containing pages 1, 3, 4, 5, 8, 9 and 10 in the order you typed them.
+
+Safety features
+
+The page input accepts commas, spaces, "and", "-" or "to" between numbers.
+It rejects page numbers that don't exist and backwards ranges like 5-3, with a clear message.
+It never overwrites your source file.
+If an output file name already exists, it adds (2), (3) and so on instead of replacing it.
+PDFs that need a password to open are skipped with a warning.
+After each job, an "Open Folder" button takes you straight to the output.
+Pdf studio pro
+Code
+·PY
+
+feature to sort/rearrange the pages and splitting based on page breaks marked
+
+I'll add a new Organize & Split tool to the app. It shows page thumbnails, so you can drag pages into a new order, rotate, delete, or sort them. You can also mark split points between pages and either save one rearranged PDF or split it into files at the marks.
+
+The updated pdf_studio_pro.py (version 1.1) has a fourth tool in the sidebar, Organize & Split, which handles both rearranging pages and splitting at marked breaks. Merge, Split and Extract work as before.
+
+Updated install command:
+
+pip install PyQt5 pypdf cryptography pymupdf
+
+The new library is pymupdf, which draws the page thumbnails. If it isn't installed, the app still works and shows numbered placeholder pages instead.
+
+Rearranging and sorting pages
+
+Drag and drop: Drag pages into a new order in the thumbnail grid. Ctrl or Shift + click selects several pages so you can move them together.
+Move Left / Move Right: These buttons move the selected pages one step, for precise moves.
+Rotate Left / Rotate Right rotates the selected pages.
+Delete removes the selected pages from the list. The Delete key does the same, and your original file is never touched.
+Reverse flips the whole order.
+Sort 1 to N puts pages back in original page-number order and keeps your rotations and deletions.
+Odd, then Even puts pages 1, 3, 5… first, then 2, 4, 6…
+Reset All reloads the original pages with no changes.
+
+Splitting at marked page breaks
+
+Double-click a page to mark "split after this page." A red SPLIT badge appears on it. Double-click again to remove it.
+Toggle Split After Selected marks several selected pages at once.
+Every N pages marks a split automatically after every N pages.
+Border colours: Each group of pages gets its own border colour, so you can see exactly what each output file will contain.
+Live summary: Below the grid, a line shows the result, for example: 3 files will be created: [1-2] [3, 5, 4, 6] [7-9].
+
+Saving your work
+
+Save as One PDF saves the whole rearranged document as a single file.
+Split at Marks creates one file per coloured group, named like report_part1_pages_1-2.pdf.
+
+You can combine both: rearrange first, then mark splits, and the split files follow your new order. Split marks stay attached to their page, so if you drag a marked page elsewhere, its split moves with it.
+
+I tested reordering, sorting, rotation, deletion and splitting on a sample PDF, and the output files had the right pages in the right order. Rotation is applied only to the new file, never to the original.
